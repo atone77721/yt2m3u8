@@ -29,6 +29,8 @@ jobs:
 
       - name: Commit and push updated files
         run: |
+          git add youtubeLink.txt
+          git commit -m "Add youtubeLink.txt for workflow"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlist.m3u8 epg.xml
