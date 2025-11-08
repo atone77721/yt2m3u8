@@ -1,14 +1,18 @@
-name: Run YouTube M3U8 Updater
+name: Auto Update M3U8 Playlist
 
 on:
   schedule:
-    # Runs every 12 hours
+    # Every 12 hours
     - cron: "0 */12 * * *"
-  workflow_dispatch:  # allows manual triggering from the GitHub UI
+  workflow_dispatch:  # Allow manual trigger too
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # ✅ Gives this workflow push access
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,17 +27,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests lxml beautifulsoup4 pytz
 
-      - name: Run the M3U8 generator script
-        run: |
-          python YouTubeLinkGrabber.py  # 👈 replace with your actual script name
+      - name: Run the script
+        run: python YouTubeLinkGrabber.py
 
-      - name: Commit and push updated files
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlist.m3u8 epg.xml
           git commit -m "Auto-update playlist and EPG ($(date -u +'%Y-%m-%d %H:%M:%S UTC'))" || echo "No changes to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
-
+          git push
