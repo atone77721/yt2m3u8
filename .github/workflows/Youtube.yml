@@ -28,9 +28,12 @@ jobs:
           python YouTubeLinkGrabber.py  # 👈 replace with your actual script name
 
       - name: Commit and push updated files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlist.m3u8 epg.xml
           git commit -m "Auto-update playlist and EPG ($(date -u +'%Y-%m-%d %H:%M:%S UTC'))" || echo "No changes to commit"
-          git push
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+
