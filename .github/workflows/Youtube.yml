@@ -25,11 +25,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytz lxml yt-dlp
 
-      # Optional: create cookies.txt from your saved secret (Base64-encoded)
-      - name: Create cookies file (Base64 decode)
-        run: |
-          echo "${{ secrets.YOUTUBE_COOKIES }}" | base64 --decode > cookies.txt
-        # Ensure your secret YOUTUBE_COOKIES is stored as base64 text
+      # Optional: create cookies.txt from your saved secret
+      - name: Create cookies file
+        run: echo "${{ secrets.YOUTUBE_COOKIES }}" > cookies.txt
+        # remove or comment this step if you don't use cookies
 
       - name: Run script
         run: python YouTubeLinkGrabber.py
